@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
