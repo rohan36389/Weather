@@ -1,12 +1,19 @@
 import requests
 import sys
 import time
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 class AirQualityAPITester:
-    def __init__(self, base_url="http://localhost:8001/api"):
-        self.base_url = base_url
+    def __init__(self, base_url=None):
+        # Use environment variable if available, otherwise use default
+        self.base_url = base_url or os.environ.get("REACT_APP_BACKEND_URL", "http://localhost:8001/api")
         self.tests_run = 0
         self.tests_passed = 0
+        print(f"Using API endpoint: {self.base_url}")
 
     def run_test(self, name, endpoint, expected_status, params=None):
         """Run a single API test"""
@@ -59,6 +66,13 @@ class AirQualityAPITester:
                 components = response['current']['list'][0]['components']
                 print(f"Pollutants: PM2.5={components.get('pm2_5')}μg/m³, PM10={components.get('pm10')}μg/m³")
                 print(f"AQI: {response['current']['list'][0].get('main', {}).get('aqi')}")
+                
+                # Check if forecast data is available
+                if 'forecast' in response and 'list' in response['forecast'] and len(response['forecast']['list']) > 0:
+                    print(f"Forecast data available: {len(response['forecast']['list'])} entries")
+                else:
+                    print("⚠️ No forecast data available")
+                
                 return True
             else:
                 print("❌ Invalid response format")
@@ -80,6 +94,13 @@ class AirQualityAPITester:
                 components = response['current']['list'][0]['components']
                 print(f"Pollutants: PM2.5={components.get('pm2_5')}μg/m³, PM10={components.get('pm10')}μg/m³")
                 print(f"AQI: {response['current']['list'][0].get('main', {}).get('aqi')}")
+                
+                # Check if forecast data is available
+                if 'forecast' in response and 'list' in response['forecast'] and len(response['forecast']['list']) > 0:
+                    print(f"Forecast data available: {len(response['forecast']['list'])} entries")
+                else:
+                    print("⚠️ No forecast data available")
+                
                 return True
             else:
                 print("❌ Invalid response format")
@@ -107,8 +128,11 @@ class AirQualityAPITester:
         return success
 
 def main():
-    # Setup
-    tester = AirQualityAPITester("http://localhost:8001/api")
+    # Get backend URL from environment variable
+    backend_url = os.environ.get("REACT_APP_BACKEND_URL")
+    
+    # Setup tester with the correct backend URL
+    tester = AirQualityAPITester(backend_url)
     
     # Run tests
     print("\n===== Air Quality API Tests =====\n")
@@ -116,8 +140,8 @@ def main():
     # Test health check
     tester.test_health_check()
     
-    # Test with different cities
-    cities = ["New York", "London", "Tokyo", "Sydney", "Paris"]
+    # Test with different cities as specified in the requirements
+    cities = ["Tokyo", "London", "New York", "Paris", "Mumbai", "Cairo", "Stockholm", "Austin", "Sedona", "Boulder"]
     for city in cities:
         tester.test_air_quality_by_city(city)
         time.sleep(1)  # Avoid rate limiting
