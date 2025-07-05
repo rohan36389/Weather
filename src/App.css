@@ -1,0 +1,40 @@
+.App {
+  text-align: center;
+  font-family: sans-serif;
+  padding: 2rem;
+}
+
+input, select {
+  padding: 0.5rem;
+  margin: 0 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#weather-info {
+  margin-top: 2rem;
+}
+
+.forecast {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 2rem auto;
+}
+
+.day {
+  padding: 10px;
+  border-radius: 10px;
+  background: #f0f0f0;
+  width: 90px;
+}
