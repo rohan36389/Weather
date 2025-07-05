@@ -31,16 +31,21 @@ async def get_air_quality(city: str = None, lat: float = None, lon: float = None
     try:
         # If city is provided, get coordinates
         if city:
-            geo_url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}"
-            geo_res = requests.get(geo_url)
-            geo_data = geo_res.json()
-            
-            if geo_res.status_code != 200 or geo_data.get("cod") == "404":
+            try:
+                geo_url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}"
+                geo_res = requests.get(geo_url)
+                geo_data = geo_res.json()
+                
+                if geo_res.status_code != 200 or geo_data.get("cod") == "404":
+                    raise HTTPException(status_code=404, detail=f"City not found: {city}")
+                
+                lat = geo_data["coord"]["lat"]
+                lon = geo_data["coord"]["lon"]
+                city_name = geo_data["name"]
+            except HTTPException:
+                raise
+            except Exception as e:
                 raise HTTPException(status_code=404, detail=f"City not found: {city}")
-            
-            lat = geo_data["coord"]["lat"]
-            lon = geo_data["coord"]["lon"]
-            city_name = geo_data["name"]
         else:
             city_name = "Custom Location"
         
