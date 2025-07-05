@@ -35,7 +35,7 @@ async def get_air_quality(city: str = None, lat: float = None, lon: float = None
             geo_res = requests.get(geo_url)
             geo_data = geo_res.json()
             
-            if geo_res.status_code != 200:
+            if geo_res.status_code != 200 or geo_data.get("cod") == "404":
                 raise HTTPException(status_code=404, detail=f"City not found: {city}")
             
             lat = geo_data["coord"]["lat"]
